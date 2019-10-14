@@ -3,6 +3,12 @@ import './App.css';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { fetchUserDetails } from './reducers/index';
+import {
+  Container,
+  Dimmer,
+  Dropdown,
+  Loader,
+} from 'semantic-ui-react';
 
 const axios = require('axios');
 
@@ -18,33 +24,23 @@ const mapDispatchToProps = function(dispatch) {
   }, dispatch);
 }
 
-class App extends React.Component {
+class UserDropdown extends React.Component {
   constructor(props) {
     super(props);
     this.logout = this.logout.bind(this);
   }
 
-  componentDidMount() {
-    this.props.fetchUserDetails();
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.detailState === 'FAILED') {
-        window.location.href = '/auth/login';
-    }
-  }
-
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          Test
-        </header>
-          <button className="ui button"
-                  onClick={this.logout}>
-          Logout
-        </button>
-      </div>
+      <Dropdown icon="settings"
+                className="settings-dropdown"
+                pointing="top right"
+      >
+        <Dropdown.Menu>
+          <Dropdown.Item text="Logout"
+                         onClick={this.logout} />
+        </Dropdown.Menu>
+      </Dropdown>
     );
   }
 
@@ -57,6 +53,38 @@ class App extends React.Component {
         // todo-ww decide how to handle this error
       });
   }
+}
+
+class App extends React.Component {
+
+  componentDidMount() {
+    this.props.fetchUserDetails();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.detailState === 'FAILED') {
+      window.location.href = '/auth/login';
+    }
+  }
+
+  get isLoading() {
+    return !this.props.detailState;
+  }
+
+  render() {
+    return (
+      <Container fluid={true}>
+        { this.isLoading ?
+          <Dimmer active>
+            <Loader />
+          </Dimmer> : null
+        }
+        <UserDropdown>
+        </UserDropdown>
+      </Container>
+    );
+  }
+
 }
 
 export default connect(mapToStateProps, mapDispatchToProps)(App);
