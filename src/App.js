@@ -2,12 +2,15 @@ import React from 'react';
 import './App.css';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { fetchUserDetails } from './reducers/index';
+import { fetchUserDetails } from './actions/index';
+import { REQUEST_STATUS } from "./models/RequestStatus";
+import StockTransactionsContainer from './components/StockTransactionsContainer';
 import {
   Container,
   Dimmer,
   Dropdown,
   Loader,
+  Tab,
 } from 'semantic-ui-react';
 
 const axios = require('axios');
@@ -55,6 +58,19 @@ class UserDropdown extends React.Component {
   }
 }
 
+const panes = [
+  {
+    menuItem: 'Stock Transactions',
+    render: () => {
+      return (
+        <Tab.Pane>
+          <StockTransactionsContainer />
+        </Tab.Pane>
+      );
+    }
+  },
+]
+
 class App extends React.Component {
 
   componentDidMount() {
@@ -62,7 +78,7 @@ class App extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.detailState === 'FAILED') {
+    if (this.props.detailState === REQUEST_STATUS.FAILED) {
       window.location.href = '/auth/login';
     }
   }
@@ -81,6 +97,7 @@ class App extends React.Component {
         }
         <UserDropdown>
         </UserDropdown>
+        <Tab panes={panes} />
       </Container>
     );
   }

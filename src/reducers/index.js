@@ -1,12 +1,11 @@
 import { combineReducers } from 'redux';
 import {
-  fetchUserDetailsSuccess,
   FETCH_USER_DETAILS_SUCCESS,
-  fetchUserDetailsFailed,
   FETCH_USER_DETAILS_FAILED,
 } from '../actions/index';
+import { REQUEST_STATUS } from "../models/RequestStatus";
+import { stockTransactionReducer } from "./StockTransaction";
 
-const axios = require('axios');
 
 const userDetailsState = {
   email: "",
@@ -19,13 +18,13 @@ export const userDetailReducer = (state = userDetailsState, action) => {
       return Object.assign(
         {}, state, {
           email: action.email,
-          requestState: 'SUCCESS'
+          requestState: REQUEST_STATUS.SUCCESS
         }
       );
     case FETCH_USER_DETAILS_FAILED:
       return Object.assign(
         {}, state, {
-          requestState: 'FAILED'
+          requestState: REQUEST_STATUS.FAILED
         }
       );
     default:
@@ -33,18 +32,7 @@ export const userDetailReducer = (state = userDetailsState, action) => {
   }
 }
 
-export const fetchUserDetails = () => {
-  return dispatch => {
-    axios.get('/auth/details')
-      .then((res) => {
-        dispatch(fetchUserDetailsSuccess(res.data));
-      })
-      .catch(() => {
-        dispatch(fetchUserDetailsFailed());
-      })
-  };
-}
-
 export default combineReducers({
-  userDetailReducer
+  userDetailReducer,
+  stockTransactionReducer,
 });
