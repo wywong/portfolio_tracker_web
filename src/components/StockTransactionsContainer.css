@@ -1,0 +1,7 @@
+.ui.modal > .add-transaction.content {
+  display: flex;
+  flex-direction: column;
+}
+.add-transaction > .ui.input {
+  padding-top: 5px;
+}
