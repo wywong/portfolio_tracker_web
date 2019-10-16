@@ -1,4 +1,4 @@
-.ui.modal > .add-transaction.content {
+.ui.modal > .content > .add-transaction {
   display: flex;
   flex-direction: column;
 }
