@@ -3,7 +3,11 @@ import './App.css';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { fetchUserDetails } from './actions/index';
-import { addInvestmentAccount } from './actions/InvestmentAccount';
+import {
+  addInvestmentAccount,
+  getAllInvestmentAccounts,
+  selectInvestmentAccount,
+} from './actions/InvestmentAccount';
 import { REQUEST_STATUS } from "./models/RequestStatus";
 import StockTransactionsContainer from './components/StockTransactionsContainer';
 import AddInvestmentAccountForm from './components/AddInvestmentAccountForm';
@@ -12,6 +16,7 @@ import {
   Container,
   Dimmer,
   Dropdown,
+  Icon,
   Loader,
   Menu,
   Modal,
@@ -22,7 +27,9 @@ const axios = require('axios');
 
 const mapToStateProps = function(state) {
   return {
-    detailState: state.userDetailReducer.requestState
+    detailState: state.userDetailReducer.requestState,
+    accounts: state.investmentAccountReducer.accounts,
+    selectedAccountId: state.investmentAccountReducer.selectedAccountId,
   };
 }
 
@@ -30,6 +37,8 @@ const mapDispatchToProps = function(dispatch) {
   return bindActionCreators({
     fetchUserDetails: fetchUserDetails,
     addInvestmentAccount: addInvestmentAccount,
+    getAllInvestmentAccounts: getAllInvestmentAccounts,
+    selectInvestmentAccount: selectInvestmentAccount,
   }, dispatch);
 }
 
@@ -77,26 +86,44 @@ const panes = [
   },
 ]
 
+const NULL_ID = 'NULL';
+
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       addAccountOpen: false,
-      addAccountFormState: {}
+      addAccountFormState: {},
+      accountOptions: [],
     }
     this.showAddAccount = () => this.setState({ addAccountOpen: true })
     this.closeAddAccount = () => this.setState({ addAccountOpen: false })
+    this.handleSelectAccount = this.handleSelectAccount.bind(this);
     this.onAccountFormChange = this.onAccountFormChange.bind(this);
     this.addAccount = this.addAccount.bind(this);
   }
 
   componentDidMount() {
     this.props.fetchUserDetails();
+    this.props.getAllInvestmentAccounts();
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.detailState === REQUEST_STATUS.FAILED) {
       window.location.href = '/auth/login';
+    }
+    let accountListChanged = prevProps.accounts.length !== this.props.accounts.length;
+    if (accountListChanged) {
+      this.setState({
+        accountOptions: this.props.accounts.map(account => {
+          let id = account.id === null ? NULL_ID : account.id;
+          return {
+            key: id,
+            text: account.name,
+            value: id,
+          };
+        })
+      });
     }
   }
 
@@ -130,8 +157,16 @@ class App extends React.Component {
               </Button>
             </Modal.Actions>
         </Modal>
-        <Menu attached="top">
-          <Button onClick={this.showAddAccount}>
+        <Menu attached="top" className="top-bar">
+          <Dropdown className="accounts-dropdown"
+                    pointing="top left"
+                    selection
+                    onChange={this.handleSelectAccount}
+                    value={this.selectedAccountId}
+                    options={this.state.accountOptions}
+          ></Dropdown>
+          <Button primary onClick={this.showAddAccount}>
+            <Icon name="plus" />
             Add Investment Account
           </Button>
           <Menu.Menu position="right">
@@ -142,6 +177,14 @@ class App extends React.Component {
         <Tab panes={panes} />
       </Container>
     );
+  }
+
+  get selectedAccountId() {
+    return this.props.selectedAccountId === null ? NULL_ID : this.props.selectedAccountId;
+  }
+
+  handleSelectAccount(e, {value}) {
+    this.props.selectInvestmentAccount(value === NULL_ID ? null : value);
   }
 
   onAccountFormChange(formState) {

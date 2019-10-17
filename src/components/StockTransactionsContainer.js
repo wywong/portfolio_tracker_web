@@ -2,7 +2,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { addTransaction } from "../actions/StockTransaction";
-import { Button, Modal } from 'semantic-ui-react'
+import { Button, Icon, Modal } from 'semantic-ui-react'
 import AddStockTransactionForm from './AddStockTransactionForm';
 import './StockTransactionsContainer.css';
 
@@ -60,7 +60,10 @@ class StockTransactionsContainer extends React.Component {
               </Button>
             </Modal.Actions>
         </Modal>
-        <Button onClick={this.show}>Add Transaction</Button>
+        <Button primary onClick={this.show}>
+          <Icon name="plus" />
+          Add Transaction
+        </Button>
       </div>
     );
   }

@@ -33,8 +33,8 @@ class AddInvestmentAccountForm extends React.Component {
                onChange={this.handleAccountNameChange}
         />
         <Checkbox label="Taxable"
-                  value={this.isTaxable()}
-                  onChange={this.handleTradeDateChange}
+                  checked={this.isTaxable()}
+                  onChange={this.handleTaxableChange}
         />
       </div>
     );
@@ -71,11 +71,11 @@ class AddInvestmentAccountForm extends React.Component {
     return this.state.addAccountFields.taxable;
   }
 
-  handleTaxableChange(e, { value }) {
+  handleTaxableChange(e, { checked }) {
     this.setState({
       addAccountFields: Object.assign(
         {}, this.state.addAccountFields, {
-          taxable: value
+          taxable: checked
         }
       )
     }, () => this.emitFormState());

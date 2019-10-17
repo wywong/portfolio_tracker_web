@@ -1,33 +1,55 @@
 import {
-  ADD_INVESTMENT_ACCOUNT_PENDING,
+  SELECT_INVESTMENT_ACCOUNT,
+  INVESTMENT_ACCOUNT_REQUEST_PENDING,
+  INVESTMENT_ACCOUNT_REQUEST_FAILED,
   ADD_INVESTMENT_ACCOUNT_SUCCESS,
-  ADD_INVESTMENT_ACCOUNT_FAILED,
+  GET_ALL_INVESTMENT_ACCOUNTS_SUCCESS,
 } from "../actions/InvestmentAccount";
 import { REQUEST_STATUS } from "../models/RequestStatus";
 
+const DEFAULT_ACCOUNTS = [
+  {
+    id: null,
+    name: "Unassigned Transactions",
+    taxable: true
+  }
+];
+
 const investmentAccountInitialState = {
-  accounts: [],
+  selectedAccountId: null,
+  accounts: DEFAULT_ACCOUNTS.slice(),
   request_status: REQUEST_STATUS.INACTIVE
 };
 
 export const investmentAccountReducer = (state = investmentAccountInitialState, action) => {
   switch (action.type) {
-    case ADD_INVESTMENT_ACCOUNT_PENDING:
+    case SELECT_INVESTMENT_ACCOUNT:
+      return Object.assign({}, state, {
+        selectedAccountId: action.id
+      });
+    case INVESTMENT_ACCOUNT_REQUEST_PENDING:
       return Object.assign(
         {}, state, {
           request_status: REQUEST_STATUS.PENDING
         }
       );
-    case ADD_INVESTMENT_ACCOUNT_FAILED:
+    case INVESTMENT_ACCOUNT_REQUEST_FAILED:
       return Object.assign(
         {}, state, {
           request_status: REQUEST_STATUS.FAILED
         }
       );
     case ADD_INVESTMENT_ACCOUNT_SUCCESS:
-      state.accounts.push(action.INVESTMENT_ACCOUNT);
       return Object.assign(
         {}, state, {
+          accounts: [...state.accounts, action.INVESTMENT_ACCOUNT],
+          request_status: REQUEST_STATUS.SUCCESS,
+        }
+      );
+    case GET_ALL_INVESTMENT_ACCOUNTS_SUCCESS:
+      return Object.assign(
+        {}, state, {
+          accounts: DEFAULT_ACCOUNTS.concat(action.accounts),
           request_status: REQUEST_STATUS.SUCCESS,
         }
       );
