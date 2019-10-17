@@ -5,6 +5,7 @@ import {
 } from '../actions/index';
 import { REQUEST_STATUS } from "../models/RequestStatus";
 import { stockTransactionReducer } from "./StockTransaction";
+import { investmentAccountReducer } from "./InvestmentAccount";
 
 
 const userDetailsState = {
@@ -35,4 +36,5 @@ export const userDetailReducer = (state = userDetailsState, action) => {
 export default combineReducers({
   userDetailReducer,
   stockTransactionReducer,
+  investmentAccountReducer,
 });

@@ -3,13 +3,18 @@ import './App.css';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { fetchUserDetails } from './actions/index';
+import { addInvestmentAccount } from './actions/InvestmentAccount';
 import { REQUEST_STATUS } from "./models/RequestStatus";
 import StockTransactionsContainer from './components/StockTransactionsContainer';
+import AddInvestmentAccountForm from './components/AddInvestmentAccountForm';
 import {
+  Button,
   Container,
   Dimmer,
   Dropdown,
   Loader,
+  Menu,
+  Modal,
   Tab,
 } from 'semantic-ui-react';
 
@@ -23,7 +28,8 @@ const mapToStateProps = function(state) {
 
 const mapDispatchToProps = function(dispatch) {
   return bindActionCreators({
-    fetchUserDetails: fetchUserDetails
+    fetchUserDetails: fetchUserDetails,
+    addInvestmentAccount: addInvestmentAccount,
   }, dispatch);
 }
 
@@ -72,6 +78,17 @@ const panes = [
 ]
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      addAccountOpen: false,
+      addAccountFormState: {}
+    }
+    this.showAddAccount = () => this.setState({ addAccountOpen: true })
+    this.closeAddAccount = () => this.setState({ addAccountOpen: false })
+    this.onAccountFormChange = this.onAccountFormChange.bind(this);
+    this.addAccount = this.addAccount.bind(this);
+  }
 
   componentDidMount() {
     this.props.fetchUserDetails();
@@ -95,13 +112,53 @@ class App extends React.Component {
             <Loader />
           </Dimmer> : null
         }
-        <UserDropdown>
-        </UserDropdown>
+        <Modal size="small"
+               open={this.state.addAccountOpen}
+               onClose={this.closeAddAccount}>
+            <Modal.Header>Add Investment Account</Modal.Header>
+            <Modal.Content>
+              <AddInvestmentAccountForm onChange={this.onAccountFormChange} />
+            </Modal.Content>
+            <Modal.Actions>
+              <Button onClick={this.closeAddAccount}>
+                Cancel
+              </Button>
+              <Button positive
+                      disabled={!this.state.addAccountFormState.allFieldsValid}
+                      onClick={this.addAccount}>
+                Create
+              </Button>
+            </Modal.Actions>
+        </Modal>
+        <Menu attached="top">
+          <Button onClick={this.showAddAccount}>
+            Add Investment Account
+          </Button>
+          <Menu.Menu position="right">
+            <UserDropdown>
+            </UserDropdown>
+          </Menu.Menu>
+        </Menu>
         <Tab panes={panes} />
       </Container>
     );
   }
 
+  onAccountFormChange(formState) {
+    this.setState({
+      addAccountFormState: Object.assign({}, formState)
+    });
+  }
+
+  addAccount() {
+    this.props.addInvestmentAccount(Object.assign(
+      {}, this.state.addAccountFormState.addAccountFields
+    ));
+    this.setState({
+      addAccountOpen: false,
+      addAccountFormState: {}
+    });
+  }
 }
 
 export default connect(mapToStateProps, mapDispatchToProps)(App);

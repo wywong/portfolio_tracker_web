@@ -60,7 +60,7 @@ class StockTransactionsContainer extends React.Component {
               </Button>
             </Modal.Actions>
         </Modal>
-        <Button onClick={this.show}>Add transaction</Button>
+        <Button onClick={this.show}>Add Transaction</Button>
       </div>
     );
   }
