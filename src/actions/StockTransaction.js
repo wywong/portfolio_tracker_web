@@ -1,13 +1,13 @@
 const axios = require('axios');
 
-export const ADD_TRANSACTION_PENDING = "ADD_TRANSACTION_PENDING";
+export const TRANSACTION_REQUEST_PENDING = "TRANSACTION_REQUEST_PENDING";
+export const TRANSACTION_REQUEST_FAILED = "TRANSACTION_REQUEST_FAILED";
 export const ADD_TRANSACTION_SUCCESS = "ADD_TRANSACTION_SUCCESS";
-export const ADD_TRANSACTION_FAILED = "ADD_TRANSACTION_FAILED";
 
 export const addTransaction = transactionDetail => {
   return dispatch => {
     dispatch({
-        type: ADD_TRANSACTION_PENDING
+        type: TRANSACTION_REQUEST_PENDING
     });
     axios.post('/api/v1/transaction', transactionDetail)
       .then((response) => {
@@ -18,7 +18,32 @@ export const addTransaction = transactionDetail => {
       })
       .catch(() => {
         dispatch({
-          type: ADD_TRANSACTION_FAILED
+          type: TRANSACTION_REQUEST_FAILED
+        });
+      });
+  };
+};
+
+export const GET_ACCOUNT_TRANSACTIONS_SUCCESS = "GET_ACCOUNT_TRANSACTIONS_SUCCESS";
+
+export const getAccountTransactions = accountId => {
+  return dispatch => {
+    dispatch({
+        type: TRANSACTION_REQUEST_PENDING
+    });
+    axios.get('/api/v1/investment_account/transactions', {
+      params: {
+        account_id: accountId
+      }
+    }).then((response) => {
+        dispatch({
+          type: GET_ACCOUNT_TRANSACTIONS_SUCCESS,
+          transactions: response.data
+        })
+      })
+      .catch(() => {
+        dispatch({
+          type: TRANSACTION_REQUEST_FAILED
         });
       });
   };

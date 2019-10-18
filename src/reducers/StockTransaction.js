@@ -1,7 +1,8 @@
 import {
-  ADD_TRANSACTION_PENDING,
+  TRANSACTION_REQUEST_PENDING,
+  TRANSACTION_REQUEST_FAILED,
   ADD_TRANSACTION_SUCCESS,
-  ADD_TRANSACTION_FAILED,
+  GET_ACCOUNT_TRANSACTIONS_SUCCESS,
 } from "../actions/StockTransaction";
 import { REQUEST_STATUS } from "../models/RequestStatus";
 
@@ -12,22 +13,29 @@ const stockTransactionInitialState = {
 
 export const stockTransactionReducer = (state = stockTransactionInitialState, action) => {
   switch (action.type) {
-    case ADD_TRANSACTION_PENDING:
+    case TRANSACTION_REQUEST_PENDING:
       return Object.assign(
         {}, state, {
           request_status: REQUEST_STATUS.PENDING
         }
       );
-    case ADD_TRANSACTION_FAILED:
+    case TRANSACTION_REQUEST_FAILED:
       return Object.assign(
         {}, state, {
           request_status: REQUEST_STATUS.FAILED
         }
       );
     case ADD_TRANSACTION_SUCCESS:
-      state.transactions.push(action.transaction);
       return Object.assign(
         {}, state, {
+          transactions: [...state.transactions, action.transaction],
+          request_status: REQUEST_STATUS.SUCCESS,
+        }
+      );
+    case GET_ACCOUNT_TRANSACTIONS_SUCCESS:
+      return Object.assign(
+        {}, state, {
+          transactions: action.transactions,
           request_status: REQUEST_STATUS.SUCCESS,
         }
       );
