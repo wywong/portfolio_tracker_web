@@ -25,6 +25,28 @@ export const addTransaction = transactionDetail => {
   };
 };
 
+export const UPDATE_TRANSACTION_SUCCESS = "UPDATE_TRANSACTION_SUCCESS";
+
+export const updateTransaction = transactionDetail => {
+  return dispatch => {
+    dispatch({
+        type: TRANSACTION_REQUEST_PENDING
+    });
+    axios.put('/api/v1/transaction/' + transactionDetail.id, transactionDetail)
+      .then((response) => {
+        dispatch({
+          type: UPDATE_TRANSACTION_SUCCESS,
+          transaction: response.data
+        })
+      })
+      .catch(() => {
+        dispatch({
+          type: TRANSACTION_REQUEST_FAILED
+        });
+      });
+  };
+};
+
 export const DELETE_TRANSACTION_SUCCESS = "DELETE_TRANSACTION_SUCCESS";
 
 export const deleteTransaction = id => {

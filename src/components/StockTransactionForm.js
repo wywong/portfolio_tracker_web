@@ -22,24 +22,18 @@ const validYYYY_MM_DD = (value) => {
   return /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/.test(value);
 }
 
-const addTransactionFormInitialState = {
-  transactionType: '0',
+const transactionFormInitialState = {
+  transaction_type: '0',
   stock_symbol: "",
   cost_per_unit: "",
   quantity: "",
   trade_fee: "",
   trade_date: "",
-  valid_date: false
 }
 
-class AddStockTransactionForm extends React.Component {
+class StockTransactionForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      addTransactionFields: Object.assign(
-        {}, addTransactionFormInitialState
-      )
-    };
     this.transactionType = this.transactionType.bind(this);
     this.handleTransactionTypeChange = this.handleTransactionTypeChange.bind(this);
     this.stockSymbol = this.stockSymbol.bind(this);
@@ -55,6 +49,14 @@ class AddStockTransactionForm extends React.Component {
     this.revertBadFormInput = this.revertBadFormInput.bind(this);
     this.allFormInputsValid = this.allFormInputsValid.bind(this);
     this.emitFormState = this.emitFormState.bind(this);
+    let initialFields = Object.assign(
+      {}, transactionFormInitialState, props.initialFormFields,
+    );
+    this.state = {
+      transactionFields: initialFields,
+      allFieldsValid: this.allFormInputsValid(initialFields)
+    };
+    this.emitFormState();
   }
 
   render() {
@@ -93,44 +95,52 @@ class AddStockTransactionForm extends React.Component {
   }
 
   emitFormState() {
+    let fields = {
+      transaction_type: parseInt(this.transactionType(), 10),
+      stock_symbol: this.stockSymbol(),
+      cost_per_unit: currencyToInteger(this.costPerUnit()),
+      quantity: this.quantity(),
+      trade_fee: currencyToInteger(this.tradeFee()),
+      trade_date: this.tradeDate()
+    };
     this.props.onChange({
-      transactionFields: {
-        transaction_type: parseInt(this.transactionType(), 10),
-        stock_symbol: this.stockSymbol(),
-        cost_per_unit: currencyToInteger(this.costPerUnit()),
-        quantity: this.quantity(),
-        trade_fee: currencyToInteger(this.tradeFee()),
-        trade_date: this.tradeDate()
-      },
-      allFieldsValid: this.allFormInputsValid()
+      transactionFields: fields,
+      allFieldsValid: this.allFormInputsValid(fields)
     });
   }
 
-  allFormInputsValid() {
-    return this.stockSymbol() !== "" &&
-      this.costPerUnit() !== "" &&
-      this.quantity() !== "" &&
-      this.tradeFee() !== "" &&
-      this.state.addTransactionFields.valid_date;
+  allFormInputsValid({
+    transaction_type,
+    stock_symbol,
+    cost_per_unit,
+    quantity,
+    trade_fee,
+    trade_date,
+  }) {
+    return stock_symbol !== "" &&
+      validCurrency(cost_per_unit) &&
+      validPositiveInteger(quantity) &&
+      validCurrency(trade_fee) &&
+      validYYYY_MM_DD(trade_date)
   }
 
   revertBadFormInput() {
     this.setState({
-      addTransactionFields: Object.assign(
-        {}, this.state.addTransactionFields
+      transactionFields: Object.assign(
+        {}, this.state.transactionFields
       )
     });
   }
 
   transactionType() {
-    return this.state.addTransactionFields.transactionType;
+    return this.state.transactionFields.transaction_type;
   }
 
   handleTransactionTypeChange(e, { value }) {
     this.setState({
-      addTransactionFields: Object.assign(
-        {}, this.state.addTransactionFields, {
-          transactionType: value
+      transactionFields: Object.assign(
+        {}, this.state.transactionFields, {
+          transaction_type: value
         }
       )
     }, () => {
@@ -139,13 +149,13 @@ class AddStockTransactionForm extends React.Component {
   }
 
   stockSymbol() {
-    return this.state.addTransactionFields.stock_symbol;
+    return this.state.transactionFields.stock_symbol;
   }
 
   handleStockSymbolChange(e, { value }) {
     this.setState({
-      addTransactionFields: Object.assign(
-        {}, this.state.addTransactionFields, {
+      transactionFields: Object.assign(
+        {}, this.state.transactionFields, {
           stock_symbol: value
         }
       )
@@ -155,14 +165,14 @@ class AddStockTransactionForm extends React.Component {
   }
 
   costPerUnit() {
-    return this.state.addTransactionFields.cost_per_unit;
+    return this.state.transactionFields.cost_per_unit;
   }
 
   handleCostPerUnitChange(e, { value }) {
-    if (validCurrency(value)) {
+    if (validCurrency(value) || value === "") {
       this.setState({
-        addTransactionFields: Object.assign(
-          {}, this.state.addTransactionFields, {
+        transactionFields: Object.assign(
+          {}, this.state.transactionFields, {
             cost_per_unit: value
           }
         )
@@ -175,14 +185,14 @@ class AddStockTransactionForm extends React.Component {
   }
 
   quantity() {
-    return this.state.addTransactionFields.quantity;
+    return this.state.transactionFields.quantity;
   }
 
   handleQuantityChange(e, { value }) {
-    if (validPositiveInteger(value)) {
+    if (validPositiveInteger(value) || value === "") {
       this.setState({
-        addTransactionFields: Object.assign(
-          {}, this.state.addTransactionFields, {
+        transactionFields: Object.assign(
+          {}, this.state.transactionFields, {
             quantity: value
           }
         )
@@ -193,14 +203,14 @@ class AddStockTransactionForm extends React.Component {
   }
 
   tradeFee() {
-    return this.state.addTransactionFields.trade_fee;
+    return this.state.transactionFields.trade_fee;
   }
 
   handleTradeFeeChange(e, { value }) {
-    if (validCurrency(value)) {
+    if (validCurrency(value) || value === "") {
       this.setState({
-        addTransactionFields: Object.assign(
-          {}, this.state.addTransactionFields, {
+        transactionFields: Object.assign(
+          {}, this.state.transactionFields, {
             trade_fee: value
           }
         )
@@ -213,15 +223,14 @@ class AddStockTransactionForm extends React.Component {
   }
 
   tradeDate() {
-    return this.state.addTransactionFields.trade_date;
+    return this.state.transactionFields.trade_date;
   }
 
   handleTradeDateChange(e, { value }) {
     this.setState({
-      addTransactionFields: Object.assign(
-        {}, this.state.addTransactionFields, {
-          trade_date: value,
-          valid_date: validYYYY_MM_DD(value)
+      transactionFields: Object.assign(
+        {}, this.state.transactionFields, {
+          trade_date: value
         }
       )
     }, () => {
@@ -230,4 +239,4 @@ class AddStockTransactionForm extends React.Component {
   }
 }
 
-export default AddStockTransactionForm;
+export default StockTransactionForm;

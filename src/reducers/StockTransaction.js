@@ -2,6 +2,7 @@ import {
   TRANSACTION_REQUEST_PENDING,
   TRANSACTION_REQUEST_FAILED,
   ADD_TRANSACTION_SUCCESS,
+  UPDATE_TRANSACTION_SUCCESS,
   DELETE_TRANSACTION_SUCCESS,
   GET_ACCOUNT_TRANSACTIONS_SUCCESS,
 } from "../actions/StockTransaction";
@@ -30,6 +31,22 @@ export const stockTransactionReducer = (state = stockTransactionInitialState, ac
       return Object.assign(
         {}, state, {
           transactions: [...state.transactions, action.transaction],
+          request_status: REQUEST_STATUS.SUCCESS,
+        }
+      );
+    case UPDATE_TRANSACTION_SUCCESS:
+      let transactionIndex = state.transactions.findIndex(transaction => {
+        return transaction.id === action.transaction.id;
+      });
+      let transactions = state.transactions.slice();
+      if (transactionIndex < 0) {
+        transactions.push(action.transaction);
+      } else {
+        transactions[transactionIndex] = action.transaction;
+      }
+      return Object.assign(
+        {}, state, {
+          transactions: transactions,
           request_status: REQUEST_STATUS.SUCCESS,
         }
       );

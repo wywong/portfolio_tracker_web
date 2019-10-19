@@ -3,11 +3,12 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
   addTransaction,
+  updateTransaction,
   deleteTransaction,
   getAccountTransactions
 } from "../actions/StockTransaction";
 import { Button, Checkbox, Icon, Modal, Table } from 'semantic-ui-react'
-import AddStockTransactionForm from './AddStockTransactionForm';
+import StockTransactionForm from './StockTransactionForm';
 import './StockTransactionsContainer.css';
 
 
@@ -21,31 +22,44 @@ const mapToStateProps = function(state) {
 const mapDispatchToProps = function(dispatch) {
   return bindActionCreators({
     addTransaction: addTransaction,
+    updateTransaction: updateTransaction,
     deleteTransaction: deleteTransaction,
     getAccountTransactions: getAccountTransactions,
   }, dispatch);
 }
 
-const initialAddTransactionFormState = {
+const initialTransactionFormState = {
   transactionFields: {},
   allFieldsValid: false
 }
+
+const transactionToFields = transaction => {
+  return {
+    transaction_type: transaction.transaction_type === 0 ? "0" : "1",
+    stock_symbol: transaction.stock_symbol,
+    cost_per_unit: (transaction.cost_per_unit / 100).toFixed(2),
+    quantity: transaction.quantity,
+    trade_fee: (transaction.trade_fee / 100).toFixed(2),
+    trade_date: transaction.trade_date
+  };
+};
 
 class StockTransactionsContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
-      addTransactionFormState: Object.assign(
-        {}, initialAddTransactionFormState
+      transactionParams: {},
+      transactionFormState: Object.assign(
+        {}, initialTransactionFormState
       ),
       deleteConfirmOpen: false,
       deleteId: null,
     };
-    this.show = () => this.setState({ open: true })
-    this.close = () => this.setState({ open: false })
-    this.showConfirmDelete = (id) => this.setState({ deleteConfirmOpen: true, deleteId: id })
-    this.closeConfirmDelete = () => this.setState({ deleteConfirmOpen: false, deleteId: null })
+    this.showTransactionForm = (params) => this.setState({ open: true, transactionParams: params });
+    this.closeTransactionForm = () => this.setState({ open: false, transactionParams: {}});
+    this.showConfirmDelete = (id) => this.setState({ deleteConfirmOpen: true, deleteId: id });
+    this.closeConfirmDelete = () => this.setState({ deleteConfirmOpen: false, deleteId: null });
     this.deleteTransaction = this.deleteTransaction.bind(this);
     this.addStock = this.addStock.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -66,24 +80,29 @@ class StockTransactionsContainer extends React.Component {
       <div className="stock-transaction-container">
         <Modal size="small"
                open={this.state.open}
-               onClose={this.close}>
-            <Modal.Header>Add Stock Transaction</Modal.Header>
+               onClose={this.closeTransactionForm}>
+            <Modal.Header>{ this.state.transactionParams.header }</Modal.Header>
             <Modal.Content>
-              <AddStockTransactionForm onChange={this.onChange} />
+              <StockTransactionForm onChange={this.onChange}
+                                    initialFormFields={ this.state.transactionParams.initialFormFields }/>
             </Modal.Content>
             <Modal.Actions>
-              <Button onClick={this.close}>
+              <Button onClick={this.closeTransactionForm}>
                 Cancel
               </Button>
               <Button primary
-                      disabled={!this.state.addTransactionFormState.allFieldsValid}
-                      onClick={this.addStock}>
-                Create
+                      disabled={!this.state.transactionFormState.allFieldsValid}
+                      onClick={this.state.transactionParams.successCallback}>
+                { this.state.transactionParams.actionButton }
               </Button>
             </Modal.Actions>
         </Modal>
-        <Button primary onClick={this.show}>
-          <Icon name="plus" />
+        <Button primary onClick={(() => this.showTransactionForm({
+          header: 'Add Stock Transaction',
+          actionButton: 'Create',
+          initialFormFields: {},
+          successCallback: this.addStock.bind(this)
+        })).bind(this)}>
           Add Transaction
         </Button>
         <Modal size="small"
@@ -119,24 +138,34 @@ class StockTransactionsContainer extends React.Component {
           <Table.Body>
             {
               this.props.transactions.map(transaction => {
+                let fields = transactionToFields(transaction);
                 return (
                   <Table.Row key={transaction.id}>
                     <Table.Cell collapsing><Checkbox /></Table.Cell>
                       <Table.Cell collapsing
                                   className="action-cell"
                                   textAlign="center">
-                      <Icon name="pencil" className="action"/>
+                      <Icon name="pencil"
+                            className="action"
+                            onClick={(() => this.showTransactionForm({
+                              id: transaction.id,
+                              header: 'Edit Stock Transaction',
+                              actionButton: 'Update',
+                              initialFormFields: fields,
+                              successCallback: this.updateStock.bind(this)
+                            })).bind(this)}
+                      />
                       <Icon name="trash"
                             className="action"
                             onClick={() => this.showConfirmDelete(transaction.id)}
                       />
                     </Table.Cell>
-                    <Table.Cell>{transaction.transaction_type === 0 ? "Buy" : "Sell" }</Table.Cell>
-                    <Table.Cell>{transaction.stock_symbol}</Table.Cell>
-                    <Table.Cell>{(transaction.cost_per_unit / 100).toFixed(2)}</Table.Cell>
-                    <Table.Cell>{transaction.quantity}</Table.Cell>
-                    <Table.Cell>{(transaction.trade_fee / 100).toFixed(2)}</Table.Cell>
-                    <Table.Cell>{transaction.trade_date}</Table.Cell>
+                    <Table.Cell>{fields.transaction_type === "0" ? "Buy" : "Sell"}</Table.Cell>
+                    <Table.Cell>{fields.stock_symbol}</Table.Cell>
+                    <Table.Cell>{fields.cost_per_unit}</Table.Cell>
+                    <Table.Cell>{fields.quantity}</Table.Cell>
+                    <Table.Cell>{fields.trade_fee}</Table.Cell>
+                    <Table.Cell>{fields.trade_date}</Table.Cell>
                   </Table.Row>
                 );
               })
@@ -145,6 +174,20 @@ class StockTransactionsContainer extends React.Component {
         </Table>
       </div>
     );
+  }
+
+  updateStock() {
+    if (this.state.transactionParams.id) {
+      this.props.updateTransaction(
+        Object.assign(
+          {}, this.state.transactionFormState.transactionFields, {
+            id: this.state.transactionParams.id,
+            account_id: this.props.selectedAccountId,
+          }
+        )
+      );
+    }
+    this.closeTransactionForm();
   }
 
   deleteTransaction() {
@@ -157,22 +200,22 @@ class StockTransactionsContainer extends React.Component {
   addStock() {
     this.props.addTransaction(
       Object.assign(
-        {}, this.state.addTransactionFormState.transactionFields, {
+        {}, this.state.transactionFormState.transactionFields, {
           account_id: this.props.selectedAccountId
         }
       )
     );
     this.setState({
-      addTransactionFormState: Object.assign(
-        {}, initialAddTransactionFormState
+      transactionFormState: Object.assign(
+        {}, initialTransactionFormState
       )
     });
-    this.close();
+    this.closeTransactionForm();
   }
 
   onChange(formState) {
     this.setState({
-      addTransactionFormState: formState
+      transactionFormState: formState
     });
   }
 }
