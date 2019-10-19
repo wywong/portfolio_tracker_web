@@ -5,3 +5,8 @@
 .add-transaction > .ui.input {
   padding-top: 5px;
 }
+
+.action-cell .action:hover {
+  color: #2185d0;
+  cursor: pointer;
+}

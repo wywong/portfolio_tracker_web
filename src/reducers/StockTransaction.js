@@ -2,6 +2,7 @@ import {
   TRANSACTION_REQUEST_PENDING,
   TRANSACTION_REQUEST_FAILED,
   ADD_TRANSACTION_SUCCESS,
+  DELETE_TRANSACTION_SUCCESS,
   GET_ACCOUNT_TRANSACTIONS_SUCCESS,
 } from "../actions/StockTransaction";
 import { REQUEST_STATUS } from "../models/RequestStatus";
@@ -29,6 +30,13 @@ export const stockTransactionReducer = (state = stockTransactionInitialState, ac
       return Object.assign(
         {}, state, {
           transactions: [...state.transactions, action.transaction],
+          request_status: REQUEST_STATUS.SUCCESS,
+        }
+      );
+    case DELETE_TRANSACTION_SUCCESS:
+      return Object.assign(
+        {}, state, {
+          transactions: state.transactions.filter(transaction => transaction.id !== action.transactionId),
           request_status: REQUEST_STATUS.SUCCESS,
         }
       );

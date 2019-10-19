@@ -150,7 +150,7 @@ class App extends React.Component {
               <Button onClick={this.closeAddAccount}>
                 Cancel
               </Button>
-              <Button positive
+              <Button primary
                       disabled={!this.state.addAccountFormState.allFieldsValid}
                       onClick={this.addAccount}>
                 Create
