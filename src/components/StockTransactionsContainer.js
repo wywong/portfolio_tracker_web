@@ -53,7 +53,7 @@ class StockTransactionsContainer extends React.Component {
 
   render() {
     return (
-      <div className="">
+      <div className="stock-transaction-container">
         <Modal size="small"
                open={this.state.open}
                onClose={this.close}>
@@ -76,7 +76,7 @@ class StockTransactionsContainer extends React.Component {
           <Icon name="plus" />
           Add Transaction
         </Button>
-        <Table celled>
+        <Table celled compact>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>Transaction Type</Table.HeaderCell>
@@ -94,9 +94,9 @@ class StockTransactionsContainer extends React.Component {
                   <Table.Row key={transaction.id}>
                     <Table.Cell>{transaction.transaction_type === 0 ? "Buy" : "Sell" }</Table.Cell>
                     <Table.Cell>{transaction.stock_symbol}</Table.Cell>
-                    <Table.Cell>{Math.round(transaction.cost_per_unit / 100).toFixed(2)}</Table.Cell>
+                    <Table.Cell>{(transaction.cost_per_unit / 100).toFixed(2)}</Table.Cell>
                     <Table.Cell>{transaction.quantity}</Table.Cell>
-                    <Table.Cell>{Math.round(transaction.trade_fee / 100).toFixed(2)}</Table.Cell>
+                    <Table.Cell>{(transaction.trade_fee / 100).toFixed(2)}</Table.Cell>
                     <Table.Cell>{transaction.trade_date}</Table.Cell>
                   </Table.Row>
                 );

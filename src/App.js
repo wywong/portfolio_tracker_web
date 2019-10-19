@@ -157,7 +157,7 @@ class App extends React.Component {
               </Button>
             </Modal.Actions>
         </Modal>
-        <Menu attached="top" className="top-bar">
+        <Menu fixed="top" className="top-bar">
           <Dropdown className="accounts-dropdown"
                     pointing="top left"
                     selection
@@ -174,7 +174,7 @@ class App extends React.Component {
             </UserDropdown>
           </Menu.Menu>
         </Menu>
-        <Tab panes={panes} />
+        <Tab className="portfolio-tabs" panes={panes} />
       </Container>
     );
   }
