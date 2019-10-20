@@ -2,16 +2,12 @@ import React from 'react';
 import { Input, Dropdown } from 'semantic-ui-react'
 
 const transactionTypes = [
-  { key: '0', value: '0', text: 'Buy' },
-  { key: '1', value: '1', text: 'Sell' },
+  { key: 'buy', value: 'buy', text: 'Buy' },
+  { key: 'sell', value: 'sell', text: 'Sell' },
 ];
 
 const validCurrency = (value) => {
   return /^\d+(\.\d{0,2}?)?$/.test(value);
-}
-
-const currencyToInteger = (value) => {
-  return Math.round(parseFloat(value) * 100);
 }
 
 const validPositiveInteger = (value) => {
@@ -23,7 +19,7 @@ const validYYYY_MM_DD = (value) => {
 }
 
 const transactionFormInitialState = {
-  transaction_type: '0',
+  transaction_type: 'buy',
   stock_symbol: "",
   cost_per_unit: "",
   quantity: "",
@@ -96,11 +92,11 @@ class StockTransactionForm extends React.Component {
 
   emitFormState() {
     let fields = {
-      transaction_type: parseInt(this.transactionType(), 10),
+      transaction_type: this.transactionType(),
       stock_symbol: this.stockSymbol(),
-      cost_per_unit: currencyToInteger(this.costPerUnit()),
+      cost_per_unit: this.costPerUnit(),
       quantity: this.quantity(),
-      trade_fee: currencyToInteger(this.tradeFee()),
+      trade_fee: this.tradeFee(),
       trade_date: this.tradeDate()
     };
     this.props.onChange({
@@ -196,6 +192,8 @@ class StockTransactionForm extends React.Component {
             quantity: value
           }
         )
+      }, () => {
+        this.emitFormState();
       });
     } else {
       this.revertBadFormInput();

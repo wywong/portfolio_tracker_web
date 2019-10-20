@@ -33,17 +33,6 @@ const initialTransactionFormState = {
   allFieldsValid: false
 }
 
-const transactionToFields = transaction => {
-  return {
-    transaction_type: transaction.transaction_type === 0 ? "0" : "1",
-    stock_symbol: transaction.stock_symbol,
-    cost_per_unit: (transaction.cost_per_unit / 100).toFixed(2),
-    quantity: transaction.quantity,
-    trade_fee: (transaction.trade_fee / 100).toFixed(2),
-    trade_date: transaction.trade_date
-  };
-};
-
 class StockTransactionsContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -62,6 +51,7 @@ class StockTransactionsContainer extends React.Component {
     this.closeConfirmDelete = () => this.setState({ deleteConfirmOpen: false, deleteId: null });
     this.deleteTransaction = this.deleteTransaction.bind(this);
     this.addStock = this.addStock.bind(this);
+    this.updateStock = this.updateStock.bind(this);
     this.onChange = this.onChange.bind(this);
   }
 
@@ -97,12 +87,12 @@ class StockTransactionsContainer extends React.Component {
               </Button>
             </Modal.Actions>
         </Modal>
-        <Button primary onClick={(() => this.showTransactionForm({
+        <Button primary onClick={() => this.showTransactionForm({
           header: 'Add Stock Transaction',
           actionButton: 'Create',
           initialFormFields: {},
-          successCallback: this.addStock.bind(this)
-        })).bind(this)}>
+          successCallback: this.addStock
+        })}>
           Add Transaction
         </Button>
         <Modal size="small"
@@ -138,7 +128,6 @@ class StockTransactionsContainer extends React.Component {
           <Table.Body>
             {
               this.props.transactions.map(transaction => {
-                let fields = transactionToFields(transaction);
                 return (
                   <Table.Row key={transaction.id}>
                     <Table.Cell collapsing><Checkbox /></Table.Cell>
@@ -147,25 +136,25 @@ class StockTransactionsContainer extends React.Component {
                                   textAlign="center">
                       <Icon name="pencil"
                             className="action"
-                            onClick={(() => this.showTransactionForm({
+                            onClick={() => this.showTransactionForm({
                               id: transaction.id,
                               header: 'Edit Stock Transaction',
                               actionButton: 'Update',
-                              initialFormFields: fields,
-                              successCallback: this.updateStock.bind(this)
-                            })).bind(this)}
+                              initialFormFields: Object.assign({}, transaction),
+                              successCallback: this.updateStock
+                            })}
                       />
                       <Icon name="trash"
                             className="action"
                             onClick={() => this.showConfirmDelete(transaction.id)}
                       />
                     </Table.Cell>
-                    <Table.Cell>{fields.transaction_type === "0" ? "Buy" : "Sell"}</Table.Cell>
-                    <Table.Cell>{fields.stock_symbol}</Table.Cell>
-                    <Table.Cell>{fields.cost_per_unit}</Table.Cell>
-                    <Table.Cell>{fields.quantity}</Table.Cell>
-                    <Table.Cell>{fields.trade_fee}</Table.Cell>
-                    <Table.Cell>{fields.trade_date}</Table.Cell>
+                    <Table.Cell>{transaction.transaction_type === "buy" ? "Buy" : "Sell"}</Table.Cell>
+                    <Table.Cell>{transaction.stock_symbol}</Table.Cell>
+                    <Table.Cell>{transaction.cost_per_unit}</Table.Cell>
+                    <Table.Cell>{transaction.quantity}</Table.Cell>
+                    <Table.Cell>{transaction.trade_fee}</Table.Cell>
+                    <Table.Cell>{transaction.trade_date}</Table.Cell>
                   </Table.Row>
                 );
               })
