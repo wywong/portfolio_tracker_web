@@ -94,4 +94,31 @@ export const getAccountTransactions = accountId => {
   };
 };
 
+export const IMPORT_TRANSACTIONS_SUCCESS = 'IMPORT_TRANSACTIONS_SUCCESS';
 
+
+export const importTransactions = (file, accountId) => {
+  return dispatch => {
+    dispatch({
+        type: TRANSACTION_REQUEST_PENDING
+    });
+    let formData = new FormData();
+    if (accountId !== null) formData.append('account_id', accountId);
+    formData.append('file', file);
+    axios.post('/api/v1/transaction/batch', formData, {
+      headers: {
+        'content-type': 'multipart/form-data'
+      }
+    }).then((response) => {
+        dispatch({
+          type: IMPORT_TRANSACTIONS_SUCCESS
+        })
+        dispatch(getAccountTransactions(accountId));
+      })
+      .catch(() => {
+        dispatch({
+          type: TRANSACTION_REQUEST_FAILED
+        });
+      });
+  };
+};

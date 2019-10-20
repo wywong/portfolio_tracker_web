@@ -5,6 +5,7 @@ import {
   UPDATE_TRANSACTION_SUCCESS,
   DELETE_TRANSACTION_SUCCESS,
   GET_ACCOUNT_TRANSACTIONS_SUCCESS,
+  IMPORT_TRANSACTIONS_SUCCESS,
 } from "../actions/StockTransaction";
 import { REQUEST_STATUS } from "../models/RequestStatus";
 
@@ -25,6 +26,12 @@ export const stockTransactionReducer = (state = stockTransactionInitialState, ac
       return Object.assign(
         {}, state, {
           request_status: REQUEST_STATUS.FAILED
+        }
+      );
+    case IMPORT_TRANSACTIONS_SUCCESS:
+      return Object.assign(
+        {}, state, {
+          request_status: REQUEST_STATUS.SUCCESS
         }
       );
     case ADD_TRANSACTION_SUCCESS:

@@ -5,7 +5,8 @@ import {
   addTransaction,
   updateTransaction,
   deleteTransaction,
-  getAccountTransactions
+  getAccountTransactions,
+  importTransactions
 } from "../actions/StockTransaction";
 import { Button, Checkbox, Icon, Modal, Table } from 'semantic-ui-react'
 import StockTransactionForm from './StockTransactionForm';
@@ -25,6 +26,7 @@ const mapDispatchToProps = function(dispatch) {
     updateTransaction: updateTransaction,
     deleteTransaction: deleteTransaction,
     getAccountTransactions: getAccountTransactions,
+    importTransactions: importTransactions,
   }, dispatch);
 }
 
@@ -53,6 +55,8 @@ class StockTransactionsContainer extends React.Component {
     this.addStock = this.addStock.bind(this);
     this.updateStock = this.updateStock.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.fileInputRef = React.createRef();
+    this.fileChange = this.fileChange.bind(this);
   }
 
   componentDidMount() {
@@ -95,6 +99,33 @@ class StockTransactionsContainer extends React.Component {
         })}>
           Add Transaction
         </Button>
+        <Modal size="small"
+               open={this.state.importModalOpen}
+               onClose={this.closeImportModal}>
+          <Modal.Header>Import transactions from a csv</Modal.Header>
+          <Modal.Content>
+          </Modal.Content>
+            <Modal.Actions>
+              <Button onClick={this.closeImportModal}>
+                Cancel
+              </Button>
+              <Button primary
+                      onClick={this.closeImportModal}>
+                Import
+              </Button>
+            </Modal.Actions>
+        </Modal>
+        <Button secondary
+                content="Import CSV"
+                labelPosition="left"
+                icon="file"
+                onClick={() => this.fileInputRef.current.click()}
+        />
+       <input ref={this.fileInputRef}
+             type="file"
+             hidden
+             onChange={this.fileChange}
+       />
         <Modal size="small"
                open={this.state.deleteConfirmOpen}
                onClose={this.closeConfirmDelete}>
@@ -206,6 +237,11 @@ class StockTransactionsContainer extends React.Component {
     this.setState({
       transactionFormState: formState
     });
+  }
+
+  fileChange(event) {
+    this.props.importTransactions(event.target.files[0], this.props.selectedAccountId);
+    event.target.value = "";
   }
 }
 
