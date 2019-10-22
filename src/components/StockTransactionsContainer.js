@@ -117,7 +117,6 @@ class StockTransactionsContainer extends React.Component {
         </Modal>
         <Button secondary
                 content="Import CSV"
-                labelPosition="left"
                 icon="file"
                 onClick={() => this.fileInputRef.current.click()}
         />

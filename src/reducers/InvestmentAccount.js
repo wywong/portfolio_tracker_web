@@ -3,6 +3,7 @@ import {
   INVESTMENT_ACCOUNT_REQUEST_PENDING,
   INVESTMENT_ACCOUNT_REQUEST_FAILED,
   ADD_INVESTMENT_ACCOUNT_SUCCESS,
+  DELETE_INVESTMENT_ACCOUNT_SUCCESS,
   GET_ALL_INVESTMENT_ACCOUNTS_SUCCESS,
 } from "../actions/InvestmentAccount";
 import { REQUEST_STATUS } from "../models/RequestStatus";
@@ -50,6 +51,14 @@ export const investmentAccountReducer = (state = investmentAccountInitialState, 
       return Object.assign(
         {}, state, {
           accounts: DEFAULT_ACCOUNTS.concat(action.accounts),
+          request_status: REQUEST_STATUS.SUCCESS,
+        }
+      );
+    case DELETE_INVESTMENT_ACCOUNT_SUCCESS:
+      return Object.assign(
+        {}, state, {
+          selectedAccountId: null,
+          accounts: state.accounts.filter(account => account.id !== action.id),
           request_status: REQUEST_STATUS.SUCCESS,
         }
       );

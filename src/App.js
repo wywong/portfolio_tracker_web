@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { fetchUserDetails } from './actions/index';
 import {
   addInvestmentAccount,
+  deleteInvestmentAccount,
   getAllInvestmentAccounts,
   selectInvestmentAccount,
 } from './actions/InvestmentAccount';
@@ -16,7 +17,6 @@ import {
   Container,
   Dimmer,
   Dropdown,
-  Icon,
   Loader,
   Menu,
   Modal,
@@ -37,6 +37,7 @@ const mapDispatchToProps = function(dispatch) {
   return bindActionCreators({
     fetchUserDetails: fetchUserDetails,
     addInvestmentAccount: addInvestmentAccount,
+    deleteInvestmentAccount: deleteInvestmentAccount,
     getAllInvestmentAccounts: getAllInvestmentAccounts,
     selectInvestmentAccount: selectInvestmentAccount,
   }, dispatch);
@@ -101,6 +102,7 @@ class App extends React.Component {
     this.handleSelectAccount = this.handleSelectAccount.bind(this);
     this.onAccountFormChange = this.onAccountFormChange.bind(this);
     this.addAccount = this.addAccount.bind(this);
+    this.deleteAccount = this.deleteAccount.bind(this);
   }
 
   componentDidMount() {
@@ -166,9 +168,16 @@ class App extends React.Component {
                     options={this.state.accountOptions}
           ></Dropdown>
           <Button primary onClick={this.showAddAccount}>
-            <Icon name="plus" />
             Add Investment Account
           </Button>
+          { this.selectedAccountId !== NULL_ID ?
+          <Dropdown className="accounts-overflow-menu"
+                    icon="ellipsis vertical large"
+                    pointing="top left">
+            <Dropdown.Menu>
+              <Dropdown.Item text="Delete" onClick={this.deleteAccount}/>
+            </Dropdown.Menu>
+          </Dropdown> : null }
           <Menu.Menu position="right">
             <UserDropdown>
             </UserDropdown>
@@ -201,6 +210,12 @@ class App extends React.Component {
       addAccountOpen: false,
       addAccountFormState: {}
     });
+  }
+
+  deleteAccount() {
+    if (this.selectedAccountId !== NULL_ID) {
+      this.props.deleteInvestmentAccount(this.selectedAccountId);
+    }
   }
 }
 

@@ -24,3 +24,8 @@
 .portfolio-tabs {
   padding-top: 60px;
 }
+
+.accounts-overflow-menu.ui.dropdown {
+  display: flex;
+  align-items: center;
+}

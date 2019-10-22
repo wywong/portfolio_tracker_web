@@ -55,3 +55,25 @@ export const getAllInvestmentAccounts = () => {
       });
   };
 };
+
+export const DELETE_INVESTMENT_ACCOUNT_SUCCESS = "DELETE_INVESTMENT_ACCOUNT_SUCCESS";
+
+export const deleteInvestmentAccount = id => {
+  return dispatch => {
+    dispatch({
+        type: INVESTMENT_ACCOUNT_REQUEST_PENDING
+    });
+    axios.delete('/api/v1/investment_account/' + id)
+      .then((response) => {
+        dispatch({
+          type: DELETE_INVESTMENT_ACCOUNT_SUCCESS,
+          id: id,
+        })
+      })
+      .catch(() => {
+        dispatch({
+          type: INVESTMENT_ACCOUNT_REQUEST_FAILED
+        });
+      });
+  };
+};
