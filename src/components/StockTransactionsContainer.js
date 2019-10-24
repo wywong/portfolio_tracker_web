@@ -6,7 +6,7 @@ import {
   updateTransaction,
   deleteTransaction,
   getAccountTransactions,
-  importTransactions
+  importTransactions,
 } from "../actions/StockTransaction";
 import { Button, Checkbox, Icon, Modal, Table } from 'semantic-ui-react'
 import StockTransactionForm from './StockTransactionForm';
@@ -46,6 +46,11 @@ class StockTransactionsContainer extends React.Component {
       ),
       deleteConfirmOpen: false,
       deleteId: null,
+      transactionSelection: {
+        selectedIds: new Set(),
+        indeterminate: false,
+        allSelected: false,
+      },
     };
     this.showTransactionForm = (params) => this.setState({ open: true, transactionParams: params });
     this.closeTransactionForm = () => this.setState({ open: false, transactionParams: {}});
@@ -57,6 +62,8 @@ class StockTransactionsContainer extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.fileInputRef = React.createRef();
     this.fileChange = this.fileChange.bind(this);
+    this.toggleSelectAll = this.toggleSelectAll.bind(this);
+    this.isSelected = (id) => this.state.transactionSelection.selectedIds.has(id);
   }
 
   componentDidMount() {
@@ -145,7 +152,12 @@ class StockTransactionsContainer extends React.Component {
         <Table celled compact>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell collapsing><Checkbox /></Table.HeaderCell>
+              <Table.HeaderCell collapsing>
+                <Checkbox indeterminate={this.state.transactionSelection.indeterminate}
+                          checked={this.state.transactionSelection.allSelected}
+                          onClick={this.toggleSelectAll}
+                />
+              </Table.HeaderCell>
               <Table.HeaderCell collapsing>Actions</Table.HeaderCell>
               <Table.HeaderCell>Transaction Type</Table.HeaderCell>
               <Table.HeaderCell>Stock Symbol</Table.HeaderCell>
@@ -160,10 +172,14 @@ class StockTransactionsContainer extends React.Component {
               this.props.transactions.map(transaction => {
                 return (
                   <Table.Row key={transaction.id}>
-                    <Table.Cell collapsing><Checkbox /></Table.Cell>
-                      <Table.Cell collapsing
-                                  className="action-cell"
-                                  textAlign="center">
+                    <Table.Cell collapsing>
+                      <Checkbox checked={this.isSelected(transaction.id)}
+                                onClick={() => this.toggleSelected(transaction.id)}
+                      />
+                    </Table.Cell>
+                    <Table.Cell collapsing
+                                className="action-cell"
+                                textAlign="center">
                       <Icon name="pencil"
                             className="action"
                             onClick={() => this.showTransactionForm({
@@ -241,6 +257,41 @@ class StockTransactionsContainer extends React.Component {
   fileChange(event) {
     this.props.importTransactions(event.target.files[0], this.props.selectedAccountId);
     event.target.value = "";
+  }
+
+  toggleSelected(id) {
+    let isChecked = this.state.transactionSelection.selectedIds.has(id);
+    let selectedIds = this.state.transactionSelection.selectedIds;
+    if (isChecked) {
+      selectedIds.delete(id);
+    } else {
+      selectedIds.add(id);
+    }
+    let allSelected = selectedIds.length === this.props.transactions.length;
+    this.setState({
+      transactionSelection: {
+        indeterminate: selectedIds.length !== 0 && !allSelected,
+        allSelected: allSelected,
+        selectedIds: selectedIds
+      }
+    });
+  }
+
+  toggleSelectAll() {
+    let allSelected = this.state.transactionSelection.allSelected;
+    let selectedIds;
+    if (allSelected) {
+      selectedIds = new Set();
+    } else {
+      selectedIds = new Set(this.props.transactions.map(transaction => transaction.id));
+    }
+    this.setState({
+      transactionSelection: {
+        indeterminate: false,
+        allSelected: !allSelected,
+        selectedIds: selectedIds
+      }
+    });
   }
 }
 

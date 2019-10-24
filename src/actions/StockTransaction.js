@@ -96,7 +96,6 @@ export const getAccountTransactions = accountId => {
 
 export const IMPORT_TRANSACTIONS_SUCCESS = 'IMPORT_TRANSACTIONS_SUCCESS';
 
-
 export const importTransactions = (file, accountId) => {
   return dispatch => {
     dispatch({
@@ -122,3 +121,28 @@ export const importTransactions = (file, accountId) => {
       });
   };
 };
+
+export const MOVE_TRANSACTIONS_SUCCESS = 'MOVE_TRANSACTIONS_SUCCESS';
+
+export const moveTransactions = (new_account_id, transactionIds) => {
+  return dispatch => {
+    dispatch({
+        type: TRANSACTION_REQUEST_PENDING
+    });
+    axios.put('/api/v1/transaction/batch', {
+      new_account_id: new_account_id,
+      transaction_ids: transactionIds,
+    }).then((response) => {
+        dispatch({
+          type: MOVE_TRANSACTIONS_SUCCESS,
+          transactionIds: transactionIds,
+        })
+      })
+      .catch(() => {
+        dispatch({
+          type: TRANSACTION_REQUEST_FAILED
+        });
+      });
+  };
+};
+
