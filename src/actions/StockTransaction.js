@@ -146,3 +146,28 @@ export const moveTransactions = (new_account_id, transactionIds) => {
   };
 };
 
+export const DELETE_TRANSACTIONS_SUCCESS = 'DELETE_TRANSACTIONS_SUCCESS';
+
+export const deleteTransactions = transactionIds => {
+  return dispatch => {
+    dispatch({
+        type: TRANSACTION_REQUEST_PENDING
+    });
+    axios.delete('/api/v1/transaction/batch', {
+      data: {
+        transaction_ids: transactionIds,
+      }
+    }).then((response) => {
+        dispatch({
+          type: DELETE_TRANSACTIONS_SUCCESS,
+          transactionIds: transactionIds,
+        })
+      })
+      .catch(() => {
+        dispatch({
+          type: TRANSACTION_REQUEST_FAILED
+        });
+      });
+  };
+};
+

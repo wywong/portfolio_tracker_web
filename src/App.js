@@ -172,7 +172,7 @@ class App extends React.Component {
           </Button>
           { this.selectedAccountId !== NULL_ID ?
           <Dropdown className="accounts-overflow-menu"
-                    icon="ellipsis vertical large"
+                    icon="ellipsis vertical"
                     pointing="top left">
             <Dropdown.Menu>
               <Dropdown.Item text="Delete" onClick={this.deleteAccount}/>

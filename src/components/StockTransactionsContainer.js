@@ -5,6 +5,7 @@ import {
   addTransaction,
   updateTransaction,
   deleteTransaction,
+  deleteTransactions,
   getAccountTransactions,
   importTransactions,
 } from "../actions/StockTransaction";
@@ -25,6 +26,7 @@ const mapDispatchToProps = function(dispatch) {
     addTransaction: addTransaction,
     updateTransaction: updateTransaction,
     deleteTransaction: deleteTransaction,
+    deleteTransactions: deleteTransactions,
     getAccountTransactions: getAccountTransactions,
     importTransactions: importTransactions,
   }, dispatch);
@@ -57,6 +59,7 @@ class StockTransactionsContainer extends React.Component {
     this.showConfirmDelete = (id) => this.setState({ deleteConfirmOpen: true, deleteId: id });
     this.closeConfirmDelete = () => this.setState({ deleteConfirmOpen: false, deleteId: null });
     this.deleteTransaction = this.deleteTransaction.bind(this);
+    this.deleteTransactions = this.deleteTransactions.bind(this);
     this.addStock = this.addStock.bind(this);
     this.updateStock = this.updateStock.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -64,6 +67,9 @@ class StockTransactionsContainer extends React.Component {
     this.fileChange = this.fileChange.bind(this);
     this.toggleSelectAll = this.toggleSelectAll.bind(this);
     this.isSelected = (id) => this.state.transactionSelection.selectedIds.has(id);
+    this.hasSelection = () => {
+      return this.state.transactionSelection.selectedIds.size > 0;
+    };
   }
 
   componentDidMount() {
@@ -72,6 +78,13 @@ class StockTransactionsContainer extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.selectedAccountId !== this.props.selectedAccountId) {
+      this.setState({
+        transactionSelection: {
+          selectedIds: new Set(),
+          indeterminate: false,
+          allSelected: false,
+        }
+      });
       this.props.getAccountTransactions(this.props.selectedAccountId);
     }
   }
@@ -127,6 +140,12 @@ class StockTransactionsContainer extends React.Component {
                 icon="file"
                 onClick={() => this.fileInputRef.current.click()}
         />
+        { this.hasSelection() ?
+          <Button negative
+                  content="Delete"
+                  icon="trash"
+                  onClick={() => this.deleteTransactions()}
+         /> : null }
        <input ref={this.fileInputRef}
              type="file"
              hidden
@@ -290,6 +309,17 @@ class StockTransactionsContainer extends React.Component {
         indeterminate: false,
         allSelected: !allSelected,
         selectedIds: selectedIds
+      }
+    });
+  }
+
+  deleteTransactions() {
+    this.props.deleteTransactions(Array.from(this.state.transactionSelection.selectedIds));
+    this.setState({
+      transactionSelection: {
+        selectedIds: new Set(),
+        indeterminate: false,
+        allSelected: false,
       }
     });
   }

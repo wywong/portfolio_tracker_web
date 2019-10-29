@@ -5,6 +5,7 @@ import {
   UPDATE_TRANSACTION_SUCCESS,
   MOVE_TRANSACTIONS_SUCCESS,
   DELETE_TRANSACTION_SUCCESS,
+  DELETE_TRANSACTIONS_SUCCESS,
   GET_ACCOUNT_TRANSACTIONS_SUCCESS,
   IMPORT_TRANSACTIONS_SUCCESS,
 } from "../actions/StockTransaction";
@@ -73,6 +74,17 @@ export const stockTransactionReducer = (state = stockTransactionInitialState, ac
       return Object.assign(
         {}, state, {
           transactions: state.transactions.filter(transaction => !movedTransactionIds.has(transaction.id)),
+          request_status: REQUEST_STATUS.SUCCESS,
+        }
+      );
+    case DELETE_TRANSACTIONS_SUCCESS:
+      let deletedTransactionIds = new Set();
+      action.transactionIds.forEach(id => {
+        deletedTransactionIds.add(id);
+      });
+      return Object.assign(
+        {}, state, {
+          transactions: state.transactions.filter(transaction => !deletedTransactionIds.has(transaction.id)),
           request_status: REQUEST_STATUS.SUCCESS,
         }
       );
