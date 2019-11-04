@@ -1,0 +1,14 @@
+
+.ui.modal > .content > .add-account {
+  display: flex;
+  flex-direction: column;
+}
+
+.add-account > .ui.input {
+  padding: 5px 0px;
+}
+
+.accounts-overflow-menu.ui.dropdown {
+  display: flex;
+  align-items: center;
+}

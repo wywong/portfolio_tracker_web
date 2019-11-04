@@ -5,6 +5,7 @@ import {
   ADD_INVESTMENT_ACCOUNT_SUCCESS,
   DELETE_INVESTMENT_ACCOUNT_SUCCESS,
   GET_ALL_INVESTMENT_ACCOUNTS_SUCCESS,
+  GET_INVESTMENT_ACCOUNT_STATS_SUCCESS,
 } from "../actions/InvestmentAccount";
 import { REQUEST_STATUS } from "../models/RequestStatus";
 
@@ -19,7 +20,8 @@ const DEFAULT_ACCOUNTS = [
 const investmentAccountInitialState = {
   selectedAccountId: null,
   accounts: DEFAULT_ACCOUNTS.slice(),
-  request_status: REQUEST_STATUS.INACTIVE
+  request_status: REQUEST_STATUS.INACTIVE,
+  stats: null,
 };
 
 export const investmentAccountReducer = (state = investmentAccountInitialState, action) => {
@@ -60,6 +62,12 @@ export const investmentAccountReducer = (state = investmentAccountInitialState, 
           selectedAccountId: null,
           accounts: state.accounts.filter(account => account.id !== action.id),
           request_status: REQUEST_STATUS.SUCCESS,
+        }
+      );
+    case GET_INVESTMENT_ACCOUNT_STATS_SUCCESS:
+      return Object.assign(
+        {}, state, {
+          stats: action.stats
         }
       );
     default:

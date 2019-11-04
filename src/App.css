@@ -8,14 +8,6 @@
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-.ui.modal > .content > .add-account {
-  display: flex;
-  flex-direction: column;
-}
-.add-account > .ui.input {
-  padding: 5px 0px;
-}
-
 .ui.menu.top-bar {
   margin-bottom: 5px;
   padding: 5px;
@@ -25,7 +17,4 @@
   padding-top: 60px;
 }
 
-.accounts-overflow-menu.ui.dropdown {
-  display: flex;
-  align-items: center;
-}
+
