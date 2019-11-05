@@ -21,7 +21,7 @@ const investmentAccountInitialState = {
   selectedAccountId: null,
   accounts: DEFAULT_ACCOUNTS.slice(),
   request_status: REQUEST_STATUS.INACTIVE,
-  stats: null,
+  stats: {},
 };
 
 export const investmentAccountReducer = (state = investmentAccountInitialState, action) => {

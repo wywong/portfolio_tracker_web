@@ -12,3 +12,14 @@
   display: flex;
   align-items: center;
 }
+
+.portfolio-stat {
+  display: flex;
+  align-items: center;
+  font-weight: bold;;
+  margin: 0 5px;
+}
+
+.portfolio-stat > .stat-label {
+  padding-right: 5px;
+}

@@ -6,6 +6,7 @@ import {
   addInvestmentAccount,
   deleteInvestmentAccount,
   getAllInvestmentAccounts,
+  getInvestmentAccountStats,
   selectInvestmentAccount,
 } from '../actions/InvestmentAccount';
 import AddInvestmentAccountForm from './AddInvestmentAccountForm';
@@ -22,6 +23,7 @@ const mapToStateProps = function(state) {
   return {
     accounts: state.investmentAccountReducer.accounts,
     selectedAccountId: state.investmentAccountReducer.selectedAccountId,
+    stats: state.investmentAccountReducer.stats,
   };
 }
 
@@ -30,6 +32,7 @@ const mapDispatchToProps = function(dispatch) {
     addInvestmentAccount: addInvestmentAccount,
     deleteInvestmentAccount: deleteInvestmentAccount,
     getAllInvestmentAccounts: getAllInvestmentAccounts,
+    getInvestmentAccountStats: getInvestmentAccountStats,
     selectInvestmentAccount: selectInvestmentAccount,
   }, dispatch);
 }
@@ -124,6 +127,16 @@ class TopBar extends React.Component {
             <Dropdown.Item text="Delete" onClick={this.deleteAccount}/>
           </Dropdown.Menu>
         </Dropdown> : null }
+        { this.props.stats.book_cost ?
+          <span class="portfolio-stat">
+            <span class="stat-label">Book cost:</span>
+            <p>{this.props.stats.book_cost}</p>
+          </span> : null }
+        { this.props.stats.market_value ?
+          <span class="portfolio-stat">
+            <span class="stat-label">Market value:</span>
+            <p>{this.props.stats.market_value.total}</p>
+          </span> : null }
         <Menu.Menu position="right">
           <UserDropdown>
           </UserDropdown>
@@ -156,6 +169,9 @@ class TopBar extends React.Component {
 
   handleSelectAccount(e, {value}) {
     this.props.selectInvestmentAccount(value === NULL_ID ? null : value);
+    if (value !== NULL_ID) {
+      this.props.getInvestmentAccountStats(value);
+    }
   }
 
   onAccountFormChange(formState) {
