@@ -128,13 +128,13 @@ class TopBar extends React.Component {
           </Dropdown.Menu>
         </Dropdown> : null }
         { this.props.stats.book_cost ?
-          <span class="portfolio-stat">
-            <span class="stat-label">Book cost:</span>
+          <span className="portfolio-stat">
+            <span className="stat-label">Book cost:</span>
             <p>{this.props.stats.book_cost}</p>
           </span> : null }
         { this.props.stats.market_value ?
-          <span class="portfolio-stat">
-            <span class="stat-label">Market value:</span>
+          <span className="portfolio-stat">
+            <span className="stat-label">Market value:</span>
             <p>{this.props.stats.market_value.total}</p>
           </span> : null }
         <Menu.Menu position="right">

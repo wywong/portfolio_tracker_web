@@ -104,7 +104,7 @@ export const importTransactions = (file, accountId) => {
     let formData = new FormData();
     if (accountId !== null) formData.append('account_id', accountId);
     formData.append('file', file);
-    axios.post('/api/v1/transaction/batch', formData, {
+    axios.post('/api/v1/transaction/import', formData, {
       headers: {
         'content-type': 'multipart/form-data'
       }
@@ -129,7 +129,7 @@ export const moveTransactions = (new_account_id, transactionIds) => {
     dispatch({
         type: TRANSACTION_REQUEST_PENDING
     });
-    axios.put('/api/v1/transaction/batch', {
+    axios.put('/api/v1/transaction/move', {
       new_account_id: new_account_id,
       transaction_ids: transactionIds,
     }).then((response) => {
