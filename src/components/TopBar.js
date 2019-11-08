@@ -37,10 +37,11 @@ const mapDispatchToProps = function(dispatch) {
   }, dispatch);
 }
 
-class UserDropdown extends React.Component {
+class UserSettings extends React.Component {
   constructor(props) {
     super(props);
     this.logout = this.logout.bind(this);
+    this.downloadAllTransactions = this.downloadAllTransactions.bind(this);
   }
 
   render() {
@@ -50,11 +51,17 @@ class UserDropdown extends React.Component {
                 pointing="top right"
       >
         <Dropdown.Menu>
+          <Dropdown.Item text="Download All Transactions"
+                         onClick={this.downloadAllTransactions} />
           <Dropdown.Item text="Logout"
                          onClick={this.logout} />
         </Dropdown.Menu>
       </Dropdown>
     );
+  }
+
+  downloadAllTransactions() {
+    window.open('/api/v1/transaction/export');
   }
 
   logout() {
@@ -138,8 +145,8 @@ class TopBar extends React.Component {
             <p>{this.props.stats.market_value.total}</p>
           </span> : null }
         <Menu.Menu position="right">
-          <UserDropdown>
-          </UserDropdown>
+          <UserSettings>
+          </UserSettings>
         </Menu.Menu>
         <Modal size="small"
                open={this.state.addAccountOpen}
