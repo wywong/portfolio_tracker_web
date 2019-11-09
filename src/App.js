@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { fetchUserDetails } from './actions/index';
 import { REQUEST_STATUS } from "./models/RequestStatus";
 import StockTransactionsContainer from './components/StockTransactionsContainer';
+import PortfolioDashboard from './components/PortfolioDashboard';
 import TopBar from './components/TopBar';
 import {
   Container,
@@ -26,6 +27,16 @@ const mapDispatchToProps = function(dispatch) {
 }
 
 const panes = [
+  {
+    menuItem: 'Dashboard',
+    render: () => {
+      return (
+        <Tab.Pane>
+          <PortfolioDashboard />
+        </Tab.Pane>
+      );
+    }
+  },
   {
     menuItem: 'Stock Transactions',
     render: () => {

@@ -28,7 +28,8 @@ export const investmentAccountReducer = (state = investmentAccountInitialState, 
   switch (action.type) {
     case SELECT_INVESTMENT_ACCOUNT:
       return Object.assign({}, state, {
-        selectedAccountId: action.id
+        selectedAccountId: action.id,
+        stats: {},
       });
     case INVESTMENT_ACCOUNT_REQUEST_PENDING:
       return Object.assign(
