@@ -30,6 +30,7 @@ class PortfolioDashboard extends React.Component {
             <Table.Row>
               <Table.HeaderCell>Stock</Table.HeaderCell>
               <Table.HeaderCell>Market Value</Table.HeaderCell>
+              <Table.HeaderCell>Percent</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -38,6 +39,7 @@ class PortfolioDashboard extends React.Component {
                 <Table.Row key={stock.stock_symbol}>
                   <Table.Cell>{stock.stock_symbol}</Table.Cell>
                   <Table.Cell>{stock.value}</Table.Cell>
+                  <Table.Cell>{stock.percent}</Table.Cell>
                 </Table.Row>
               )
             }) }
@@ -54,7 +56,8 @@ class PortfolioDashboard extends React.Component {
     for (let key in breakdown_obj) {
       breakdown_data.push({
         stock_symbol: key,
-        value: breakdown_obj[key]
+        value: breakdown_obj[key].value,
+        percent: breakdown_obj[key].percent,
       });
     }
     return breakdown_data;
