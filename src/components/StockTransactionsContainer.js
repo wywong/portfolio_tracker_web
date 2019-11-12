@@ -13,6 +13,7 @@ import {
   getInvestmentAccountStats,
 } from "../actions/InvestmentAccount.js";
 import { Button, Checkbox, Icon, Modal, Table } from 'semantic-ui-react'
+import InvestmentAccountTools from './InvestmentAccountTools';
 import StockTransactionForm from './StockTransactionForm';
 import './StockTransactionsContainer.css';
 
@@ -99,82 +100,33 @@ class StockTransactionsContainer extends React.Component {
   render() {
     return (
       <div className="stock-transaction-container">
-        <Modal size="small"
-               open={this.state.open}
-               onClose={this.closeTransactionForm}>
-            <Modal.Header>{ this.state.transactionParams.header }</Modal.Header>
-            <Modal.Content>
-              <StockTransactionForm onChange={this.onChange}
-                                    initialFormFields={ this.state.transactionParams.initialFormFields }/>
-            </Modal.Content>
-            <Modal.Actions>
-              <Button onClick={this.closeTransactionForm}>
-                Cancel
-              </Button>
-              <Button primary
-                      disabled={!this.state.transactionFormState.allFieldsValid}
-                      onClick={this.state.transactionParams.successCallback}>
-                { this.state.transactionParams.actionButton }
-              </Button>
-            </Modal.Actions>
-        </Modal>
-        <Button primary onClick={() => this.showTransactionForm({
-          header: 'Add Stock Transaction',
-          actionButton: 'Create',
-          initialFormFields: {},
-          successCallback: this.addStock
-        })}>
-          Add Transaction
-        </Button>
-        <Modal size="small"
-               open={this.state.importModalOpen}
-               onClose={this.closeImportModal}>
-          <Modal.Header>Import transactions from a csv</Modal.Header>
-          <Modal.Content>
-          </Modal.Content>
-            <Modal.Actions>
-              <Button onClick={this.closeImportModal}>
-                Cancel
-              </Button>
-              <Button primary
-                      onClick={this.closeImportModal}>
-                Import
-              </Button>
-            </Modal.Actions>
-        </Modal>
-        <Button secondary
-                content="Import CSV"
-                icon="file"
-                onClick={() => this.fileInputRef.current.click()}
-        />
-        { this.hasSelection() ?
-          <Button negative
-                  content="Delete"
-                  icon="trash"
-                  onClick={() => this.deleteTransactions()}
-         /> : null }
-       <input ref={this.fileInputRef}
-             type="file"
-             hidden
-             onChange={this.fileChange}
-       />
-        <Modal size="small"
-               open={this.state.deleteConfirmOpen}
-               onClose={this.closeConfirmDelete}>
-            <Modal.Header>Delete Transaction</Modal.Header>
-            <Modal.Content>
-              Are you sure you want do delete this transaction?
-            </Modal.Content>
-            <Modal.Actions>
-              <Button onClick={this.closeConfirmDelete}>
-                Cancel
-              </Button>
-              <Button negative
-                      onClick={this.deleteTransaction}>
-                Delete
-              </Button>
-            </Modal.Actions>
-        </Modal>
+        <div className="action-bar">
+          <InvestmentAccountTools />
+          <Button primary onClick={() => this.showTransactionForm({
+            header: 'Add Stock Transaction',
+            actionButton: 'Create',
+            initialFormFields: {},
+            successCallback: this.addStock
+          })}>
+            Add Transaction
+          </Button>
+          <Button secondary
+                  content="Import CSV"
+                  icon="file"
+                  onClick={() => this.fileInputRef.current.click()}
+          />
+          { this.hasSelection() ?
+            <Button negative
+                    content="Delete"
+                    icon="trash"
+                    onClick={() => this.deleteTransactions()}
+           /> : null }
+          <input ref={this.fileInputRef}
+                type="file"
+                hidden
+                onChange={this.fileChange}
+          />
+        </div>
         <Table celled compact>
           <Table.Header>
             <Table.Row>
@@ -233,6 +185,58 @@ class StockTransactionsContainer extends React.Component {
             }
           </Table.Body>
         </Table>
+        <Modal size="small"
+               open={this.state.open}
+               onClose={this.closeTransactionForm}>
+            <Modal.Header>{ this.state.transactionParams.header }</Modal.Header>
+            <Modal.Content>
+              <StockTransactionForm onChange={this.onChange}
+                                    initialFormFields={ this.state.transactionParams.initialFormFields }/>
+            </Modal.Content>
+            <Modal.Actions>
+              <Button onClick={this.closeTransactionForm}>
+                Cancel
+              </Button>
+              <Button primary
+                      disabled={!this.state.transactionFormState.allFieldsValid}
+                      onClick={this.state.transactionParams.successCallback}>
+                { this.state.transactionParams.actionButton }
+              </Button>
+            </Modal.Actions>
+        </Modal>
+        <Modal size="small"
+               open={this.state.importModalOpen}
+               onClose={this.closeImportModal}>
+          <Modal.Header>Import transactions from a csv</Modal.Header>
+          <Modal.Content>
+          </Modal.Content>
+            <Modal.Actions>
+              <Button onClick={this.closeImportModal}>
+                Cancel
+              </Button>
+              <Button primary
+                      onClick={this.closeImportModal}>
+                Import
+              </Button>
+            </Modal.Actions>
+        </Modal>
+        <Modal size="small"
+               open={this.state.deleteConfirmOpen}
+               onClose={this.closeConfirmDelete}>
+            <Modal.Header>Delete Transaction</Modal.Header>
+            <Modal.Content>
+              Are you sure you want do delete this transaction?
+            </Modal.Content>
+            <Modal.Actions>
+              <Button onClick={this.closeConfirmDelete}>
+                Cancel
+              </Button>
+              <Button negative
+                      onClick={this.deleteTransaction}>
+                Delete
+              </Button>
+            </Modal.Actions>
+        </Modal>
       </div>
     );
   }

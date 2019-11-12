@@ -28,6 +28,12 @@ class PortfolioDashboard extends React.Component {
     this.drawLabels = this.drawLabels.bind(this);
   }
 
+  componentDidMount() {
+    if (this.hasBreakdown()) {
+      this.drawChart();
+    }
+  }
+
   componentDidUpdate(prevProps) {
     if (this.hasBreakdown()) {
       this.drawChart();

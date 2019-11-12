@@ -1,0 +1,10 @@
+.investment-account-tools {
+  display: inline-flex;
+  align-items:center;
+}
+
+.accounts-overflow-menu.ui.dropdown {
+  display: flex;
+  align-items: center;
+}
+

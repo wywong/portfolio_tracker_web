@@ -8,11 +8,6 @@
   padding: 5px 0px;
 }
 
-.accounts-overflow-menu.ui.dropdown {
-  display: flex;
-  align-items: center;
-}
-
 .portfolio-stat {
   display: flex;
   align-items: center;
