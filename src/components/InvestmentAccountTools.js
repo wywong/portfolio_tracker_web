@@ -6,9 +6,12 @@ import {
   addInvestmentAccount,
   deleteInvestmentAccount,
   getAllInvestmentAccounts,
-  getInvestmentAccountStats,
   selectInvestmentAccount,
 } from '../actions/InvestmentAccount';
+import {
+  getInvestmentAccountStats,
+  getAccountStats,
+} from '../actions/Stats';
 import AddInvestmentAccountForm from './AddInvestmentAccountForm';
 import {
   Button,
@@ -30,14 +33,23 @@ const mapDispatchToProps = function(dispatch) {
     deleteInvestmentAccount: deleteInvestmentAccount,
     getAllInvestmentAccounts: getAllInvestmentAccounts,
     getInvestmentAccountStats: getInvestmentAccountStats,
+    getAccountStats: getAccountStats,
     selectInvestmentAccount: selectInvestmentAccount,
   }, dispatch);
 }
 
 const NULL_ID = 'NULL';
 
+const DEFAULT_ACCOUNTS = [
+  {
+    id: null,
+    name: "Unassigned Transactions",
+    taxable: true
+  }
+];
+
 const accountsToOptions = (accounts) => {
-  return accounts.map(account => {
+  return [...DEFAULT_ACCOUNTS, ...accounts].map(account => {
     let id = account.id === null ? NULL_ID : account.id;
     return {
       key: id,
@@ -127,6 +139,8 @@ class InvestmentAccountTools extends React.Component {
     this.props.selectInvestmentAccount(value === NULL_ID ? null : value);
     if (value !== NULL_ID) {
       this.props.getInvestmentAccountStats(value);
+    } else {
+      this.props.getAccountStats();
     }
   }
 

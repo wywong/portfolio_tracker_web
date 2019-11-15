@@ -77,25 +77,3 @@ export const deleteInvestmentAccount = id => {
       });
   };
 };
-
-export const GET_INVESTMENT_ACCOUNT_STATS_SUCCESS = "GET_INVESTMENT_ACCOUNT_STATS_SUCCESS";
-
-export const getInvestmentAccountStats = id => {
-  return dispatch => {
-    dispatch({
-        type: INVESTMENT_ACCOUNT_REQUEST_PENDING
-    });
-    axios.get(`/api/v1/investment_account/${id}/stats`)
-      .then((response) => {
-        dispatch({
-          type: GET_INVESTMENT_ACCOUNT_STATS_SUCCESS,
-          stats: response.data
-        })
-      })
-      .catch(() => {
-        dispatch({
-          type: INVESTMENT_ACCOUNT_REQUEST_FAILED
-        });
-      });
-  };
-};

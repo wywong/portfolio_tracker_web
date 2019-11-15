@@ -11,7 +11,7 @@ const axios = require('axios');
 
 const mapToStateProps = function(state) {
   return {
-    stats: state.investmentAccountReducer.stats,
+    stats: state.statsReducer.stats,
   };
 }
 

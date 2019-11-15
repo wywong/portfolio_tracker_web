@@ -11,7 +11,8 @@ import {
 } from "../actions/StockTransaction";
 import {
   getInvestmentAccountStats,
-} from "../actions/InvestmentAccount.js";
+  getAccountStats,
+} from "../actions/Stats.js";
 import { Button, Checkbox, Icon, Modal, Table } from 'semantic-ui-react'
 import InvestmentAccountTools from './InvestmentAccountTools';
 import StockTransactionForm from './StockTransactionForm';
@@ -33,6 +34,7 @@ const mapDispatchToProps = function(dispatch) {
     deleteTransactions: deleteTransactions,
     getAccountTransactions: getAccountTransactions,
     getInvestmentAccountStats: getInvestmentAccountStats,
+    getAccountStats: getAccountStats,
     importTransactions: importTransactions,
   }, dispatch);
 }
@@ -92,8 +94,12 @@ class StockTransactionsContainer extends React.Component {
       });
       this.props.getAccountTransactions(this.props.selectedAccountId);
     }
-    if (prevProps.transactions !== this.props.transactions && this.props.selectedAccountId !== null) {
-      this.props.getInvestmentAccountStats(this.props.selectedAccountId);
+    if (prevProps.transactions !== this.props.transactions) {
+      if (this.props.selectedAccountId !== null) {
+        this.props.getInvestmentAccountStats(this.props.selectedAccountId);
+      } else {
+        this.props.getAccountStats();
+      }
     }
   }
 

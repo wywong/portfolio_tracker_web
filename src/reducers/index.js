@@ -4,6 +4,7 @@ import {
   FETCH_USER_DETAILS_FAILED,
 } from '../actions/index';
 import { REQUEST_STATUS } from "../models/RequestStatus";
+import { statsReducer } from "./Stats";
 import { stockTransactionReducer } from "./StockTransaction";
 import { investmentAccountReducer } from "./InvestmentAccount";
 
@@ -35,6 +36,7 @@ export const userDetailReducer = (state = userDetailsState, action) => {
 
 export default combineReducers({
   userDetailReducer,
+  statsReducer,
   stockTransactionReducer,
   investmentAccountReducer,
 });

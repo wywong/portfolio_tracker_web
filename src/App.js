@@ -6,6 +6,9 @@ import { fetchUserDetails } from './actions/index';
 import { REQUEST_STATUS } from "./models/RequestStatus";
 import StockTransactionsContainer from './components/StockTransactionsContainer';
 import PortfolioDashboard from './components/PortfolioDashboard';
+import {
+  getAccountStats,
+} from './actions/Stats';
 import TopBar from './components/TopBar';
 import {
   Container,
@@ -23,6 +26,7 @@ const mapToStateProps = function(state) {
 const mapDispatchToProps = function(dispatch) {
   return bindActionCreators({
     fetchUserDetails: fetchUserDetails,
+    getAccountStats: getAccountStats,
   }, dispatch);
 }
 
@@ -60,6 +64,9 @@ class App extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.detailState === REQUEST_STATUS.FAILED) {
       window.location.href = '/auth/login';
+    }
+    if (this.props.detailState === REQUEST_STATUS.SUCCESS) {
+      this.props.getAccountStats();
     }
   }
 
