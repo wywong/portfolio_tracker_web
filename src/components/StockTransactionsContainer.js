@@ -297,16 +297,16 @@ class StockTransactionsContainer extends React.Component {
 
   toggleSelected(id) {
     let isChecked = this.state.transactionSelection.selectedIds.has(id);
-    let selectedIds = this.state.transactionSelection.selectedIds;
+    let selectedIds = new Set(this.state.transactionSelection.selectedIds);
     if (isChecked) {
       selectedIds.delete(id);
     } else {
       selectedIds.add(id);
     }
-    let allSelected = selectedIds.length === this.props.transactions.length;
+    let allSelected = selectedIds.size === this.props.transactions.length;
     this.setState({
       transactionSelection: {
-        indeterminate: selectedIds.length !== 0 && !allSelected,
+        indeterminate: selectedIds.size !== 0 && !allSelected,
         allSelected: allSelected,
         selectedIds: selectedIds
       }
