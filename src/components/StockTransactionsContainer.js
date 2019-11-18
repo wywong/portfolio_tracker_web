@@ -16,8 +16,7 @@ import {
 import { Button, Checkbox, Icon, Modal, Table } from 'semantic-ui-react'
 import InvestmentAccountTools from './InvestmentAccountTools';
 import StockTransactionForm from './StockTransactionForm';
-import './StockTransactionsContainer.css';
-
+import './StockTransactionsContainer.scss';
 
 const mapToStateProps = function(state) {
   return {

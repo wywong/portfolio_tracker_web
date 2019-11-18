@@ -1,9 +1,9 @@
 .ui.modal > .content > .add-transaction {
   display: flex;
   flex-direction: column;
-}
-.add-transaction > .ui.input {
-  padding-top: 5px;
+  .ui.input {
+    padding-top: 5px;
+  }
 }
 
 .action-cell .action:hover {

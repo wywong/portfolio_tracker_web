@@ -1,7 +1,6 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import './TopBar.css';
 import {
   addInvestmentAccount,
   deleteInvestmentAccount,
@@ -18,7 +17,7 @@ import {
   Dropdown,
   Modal,
 } from 'semantic-ui-react';
-import './InvestmentAccountTools.css';
+import './InvestmentAccountTools.scss';
 
 const mapToStateProps = function(state) {
   return {

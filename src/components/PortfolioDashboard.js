@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Table } from 'semantic-ui-react'
 import * as d3 from 'd3';
-import './PorfolioDashboards.css';
+import './PorfolioDashboards.scss';
 
 const mapToStateProps = function(state) {
   return {

@@ -1,3 +1,11 @@
+.ui.modal > .content > .add-account {
+  display: flex;
+  flex-direction: column;
+  .ui.input {
+    padding: 5px 0px;
+  }
+}
+
 .investment-account-tools {
   display: inline-flex;
   align-items:center;

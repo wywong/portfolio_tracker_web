@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './App.scss';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { fetchUserDetails } from './actions/index';
