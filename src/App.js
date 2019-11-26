@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { fetchUserDetails } from './actions/index';
 import { REQUEST_STATUS } from "./models/RequestStatus";
 import StockTransactionsContainer from './components/StockTransactionsContainer';
+import AdjustCostBaseContainer from './components/AdjustCostBaseContainer';
 import PortfolioDashboard from './components/PortfolioDashboard';
 import {
   getAccountStats,
@@ -47,6 +48,16 @@ const panes = [
       return (
         <Tab.Pane>
           <StockTransactionsContainer />
+        </Tab.Pane>
+      );
+    }
+  },
+  {
+    menuItem: 'Adjust Cost Base',
+    render: () => {
+      return (
+        <Tab.Pane>
+          <AdjustCostBaseContainer />
         </Tab.Pane>
       );
     }

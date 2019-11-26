@@ -5,13 +5,15 @@ import {
   ADD_INVESTMENT_ACCOUNT_SUCCESS,
   DELETE_INVESTMENT_ACCOUNT_SUCCESS,
   GET_ALL_INVESTMENT_ACCOUNTS_SUCCESS,
+  GET_INVESTMENT_ACCOUNT_ADJUST_COST_BASE_SUCCESS,
 } from "../actions/InvestmentAccount";
 import { REQUEST_STATUS } from "../models/RequestStatus";
 
 const investmentAccountInitialState = {
   selectedAccountId: null,
   accounts: [],
-  request_status: REQUEST_STATUS.INACTIVE
+  request_status: REQUEST_STATUS.INACTIVE,
+  acb: {},
 };
 
 export const investmentAccountReducer = (state = investmentAccountInitialState, action) => {
@@ -55,6 +57,14 @@ export const investmentAccountReducer = (state = investmentAccountInitialState, 
           request_status: REQUEST_STATUS.SUCCESS,
         }
       );
+    case GET_INVESTMENT_ACCOUNT_ADJUST_COST_BASE_SUCCESS:
+      return Object.assign(
+        {}, state, {
+          acb: action.acb,
+          request_status: REQUEST_STATUS.SUCCESS,
+        }
+      );
+
     default:
       return state;
   }

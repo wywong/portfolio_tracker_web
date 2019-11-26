@@ -77,3 +77,27 @@ export const deleteInvestmentAccount = id => {
       });
   };
 };
+
+export const GET_INVESTMENT_ACCOUNT_ADJUST_COST_BASE_SUCCESS = "GET_INVESTMENT_ACCOUNT_ADJUST_COST_BASE_SUCCESS";
+
+export const getInvestmentAccountAdjustCostBase = id => {
+  if (id === null) return;
+  return dispatch => {
+    dispatch({
+        type: INVESTMENT_ACCOUNT_REQUEST_PENDING
+    });
+    axios.get('/api/v1/investment_account/' + id + '/acb')
+      .then((response) => {
+        dispatch({
+          type: GET_INVESTMENT_ACCOUNT_ADJUST_COST_BASE_SUCCESS,
+          acb: response.data
+        })
+      })
+      .catch(() => {
+        dispatch({
+          type: INVESTMENT_ACCOUNT_REQUEST_FAILED
+        });
+      });
+  };
+};
+
