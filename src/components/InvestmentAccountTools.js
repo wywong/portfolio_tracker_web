@@ -43,12 +43,14 @@ const DEFAULT_ACCOUNTS = [
   {
     id: null,
     name: "Unassigned Transactions",
-    taxable: true
+    taxable: false
   }
 ];
 
-const accountsToOptions = (accounts) => {
-  return [...DEFAULT_ACCOUNTS, ...accounts].map(account => {
+const accountsToOptions = (accounts, taxableOnly) => {
+  return [...DEFAULT_ACCOUNTS, ...accounts].filter(account => {
+    return !taxableOnly || account.taxable;
+  }).map(account => {
     let id = account.id === null ? NULL_ID : account.id;
     return {
       key: id,
@@ -64,7 +66,7 @@ class InvestmentAccountTools extends React.Component {
     this.state = {
       addAccountOpen: false,
       addAccountFormState: {},
-      accountOptions: accountsToOptions(props.accounts),
+      accountOptions: accountsToOptions(props.accounts, props.taxableOnly),
     }
     this.showAddAccount = () => this.setState({ addAccountOpen: true })
     this.closeAddAccount = () => this.setState({ addAccountOpen: false })
@@ -72,6 +74,7 @@ class InvestmentAccountTools extends React.Component {
     this.onAccountFormChange = this.onAccountFormChange.bind(this);
     this.addAccount = this.addAccount.bind(this);
     this.deleteAccount = this.deleteAccount.bind(this);
+
   }
 
   componentDidMount() {
@@ -81,8 +84,14 @@ class InvestmentAccountTools extends React.Component {
   componentDidUpdate(prevProps) {
     let accountListChanged = prevProps.accounts.length !== this.props.accounts.length;
     if (accountListChanged) {
+      let accountOptions = accountsToOptions(this.props.accounts, this.props.taxableOnly);
+      let availableIds = accountOptions.map(option => option.key);
+
+      if (!availableIds.find(id => id === this.props.selectedAccountId)) {
+        this.props.selectInvestmentAccount(availableIds[0] || null);
+      }
       this.setState({
-        accountOptions: accountsToOptions(this.props.accounts),
+        accountOptions: accountOptions,
       });
     }
   }

@@ -3,6 +3,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Table } from 'semantic-ui-react'
+import InvestmentAccountTools from './InvestmentAccountTools';
 
 const mapToStateProps = function(state) {
   return {
@@ -25,6 +26,7 @@ class AdjustCostBaseContainer extends React.Component {
   render() {
     return (
       <div className="adjust-cost-base-container">
+        <InvestmentAccountTools taxableOnly={true}/>
         <Table celled compact collapsing>
           <Table.Header>
             <Table.Row>
